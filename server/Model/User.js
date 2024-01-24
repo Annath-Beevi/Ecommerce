@@ -1,5 +1,5 @@
 const { compare } = require("bcrypt")
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const mongoose = require('mongoose')
 
@@ -49,11 +49,11 @@ const userSchema = new mongoose.Schema({
     avatar: {
         public_id : {
             type: String,
-            required:true,
+            required:false,
         },
         url: {
             type: String,
-            required: true,
+            required: false,
         },
     },
     createdAt: {

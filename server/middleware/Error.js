@@ -25,5 +25,9 @@ module.exports = (err, req, res, next) => {
         const message = 'Your Url is Expired'
         err = new ErrorHandler(message, 400)
     }
+    res.status(err.status).json({
+        success: false,
+        message: err.message
+    });
 }
 

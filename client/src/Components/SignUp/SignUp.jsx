@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import styles from '../../styles/styles'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { RxAvatar } from 'react-icons/rx'
+import {server} from '../../server'
+import axios from 'axios'
 
 const SignUp = () => {
 
@@ -11,9 +13,22 @@ const SignUp = () => {
     const [name, setName] = useState("")
     const [visible, setVisible] = useState(false)
     const [avatar, setAvatar] = useState(null)
+    const navigate = useNavigate()
 
-    const handleSubmit = () => {
-        console.log("submit")
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        const config = {
+            headers: {"Content-Type": "multipart/form-data"},
+        }
+        const newForm = new FormData()
+        newForm.append('file', avatar)
+        newForm.append('name', name)
+        newForm.append('email', email)
+        newForm.append('password', password)
+        console.log(newForm)
+        axios.post(`${server}/create-user`, newForm, config)
+        .then((res) => navigate("/"))
+        .catch((err) => console.log(err))
     }
 
     const handleFileInputChange = (e) => {
@@ -28,14 +43,15 @@ const SignUp = () => {
             </div>
             <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
                 <div className='bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
-                    <form className="space-y-6">
+                    <form className="space-y-6" onSubmit={handleSubmit}>
                         <div>
-                            <label htmlFor='fullName' className='block text-sm font-medium text-gray-700'>Full Name</label>
+                            <label htmlFor='name' className='block text-sm font-medium text-gray-700'>Full Name</label>
                             <div className='mt-1'>
                                 <input
                                     placeholder='Full Name'
                                     type='text'
                                     name='name'
+                                    id='name'
                                     autoComplete='name'
                                     required
                                     onChange={(e) => setName(e.target.value)}
@@ -50,6 +66,7 @@ const SignUp = () => {
                                     placeholder='Email'
                                     type='email'
                                     name='email'
+                                    id='email'
                                     autoComplete='email'
                                     required
                                     onChange={(e) => setEmail(e.target.value)}
@@ -59,11 +76,12 @@ const SignUp = () => {
                         </div>
                         <div>
                             <label htmlFor='password' className='block text-sm font-medium text-gray-700'>Password</label>
-                            <div className='mt-1'>
+                            <div className='mt-1 relative'>
                                 <input
                                     placeholder='Password'
                                     type={visible ? "text" : "password"}
                                     name='password'
+                                    id='password'
                                     autoComplete='Current-password'
                                     required
                                     onChange={(e) => setPassword(e.target.value)}
