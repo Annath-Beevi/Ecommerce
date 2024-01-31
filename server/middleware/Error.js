@@ -21,11 +21,11 @@ module.exports = (err, req, res, next) => {
 
     //jwt expired
 
-    if (err.name === 'Token Expired Error') {
+    if (err.name === 'TokenExpiredError') {
         const message = 'Your Url is Expired'
         err = new ErrorHandler(message, 400)
     }
-    res.status(err.status).json({
+    res.status(err.statusCode).json({
         success: false,
         message: err.message
     });

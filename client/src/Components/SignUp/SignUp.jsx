@@ -3,7 +3,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import styles from '../../styles/styles'
 import { Link, useNavigate } from 'react-router-dom'
 import { RxAvatar } from 'react-icons/rx'
-import {server} from '../../server'
+import { server } from '../../server'
 import axios from 'axios'
 
 const SignUp = () => {
@@ -18,7 +18,7 @@ const SignUp = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
         const config = {
-            headers: {"Content-Type": "multipart/form-data"},
+            headers: { "Content-Type": "multipart/form-data" },
         }
         const newForm = new FormData()
         newForm.append('file', avatar)
@@ -27,8 +27,12 @@ const SignUp = () => {
         newForm.append('password', password)
         console.log(newForm)
         axios.post(`${server}/create-user`, newForm, config)
-        .then((res) => navigate("/"))
-        .catch((err) => console.log(err))
+            .then((res) => {
+                if (res.data.success === true) {
+                    navigate("/")
+                }
+            })
+            .catch((err) => console.log(err))
     }
 
     const handleFileInputChange = (e) => {
