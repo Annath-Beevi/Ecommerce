@@ -1,13 +1,33 @@
 import React, { useState } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import styles from '../../styles/styles'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
+import { server } from '../../server'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const Login = () => {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [visible, setVisible] = useState(false)
+    const navigate = useNavigate()
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        await axios.post(`${server}/login-user`,
+        {
+            email,
+            password
+        })
+        .then((res) => {
+            toast.success("Login Success");
+            navigate("/"); 
+        })
+        .catch((err) => {
+            toast.error('Login Failed')
+        })
+    }
 
     return (
         <div className='min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
@@ -16,7 +36,7 @@ const Login = () => {
             </div>
             <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
                 <div className='bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
-                    <form className="space-y-6">
+                    <form className="space-y-6" onSubmit={handleSubmit}>
                         <div>
                             <label htmlFor='email' className='block text-sm font-medium text-gray-700'>Email Address</label>
                             <div className='mt-1'>
@@ -32,10 +52,12 @@ const Login = () => {
                         </div>
                         <div>
                             <label htmlFor='password' className='block text-sm font-medium text-gray-700'>Password</label>
-                            <div className='mt-1'>
+                            <div className='mt-1 relative'>
                                 <input
                                     placeholder='Password'
-                                    type='password'
+                                    type={visible ? "text" : "password"}
+                                    name='password'
+                                    id='password'
                                     autoComplete='Current-password'
                                     required
                                     onChange={(e) => setPassword(e.target.value)}

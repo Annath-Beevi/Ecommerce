@@ -6,6 +6,8 @@ const User = require("../Model/User")
 const jwt = require('jsonwebtoken')
 const ErrorHandler = require('../utils/ErrorHandler')
 const sendMail = require("../utils/sendMail")
+const catchAsyncErrors = require('../middleware/catchAsyncErrors')
+const sendToken = require('../utils/jwtToken')
 
 const router = express.Router()
 
@@ -38,7 +40,7 @@ router.post('/create-user', upload.single('file'), async (req, res, next) => {
         }
         const activationToken = createActivationToken(user)
         const activationUrl = `http://localhost:5173/activation/${activationToken}`
-        try{
+        try {
             await sendMail({
                 email: user.email,
                 subject: "Activate Your Account",
@@ -49,7 +51,7 @@ router.post('/create-user', upload.single('file'), async (req, res, next) => {
                 message: `Please check your mail :- ${user.email} to activate your Account`,
             });
         }
-        catch(err) {
+        catch (err) {
             return next(new ErrorHandler(err.message, 400))
         }
     }
@@ -63,5 +65,44 @@ const createActivationToken = (user) => {
         expiresIn: "5m",
     })
 }
+
+router.post('/activation', catchAsyncErrors(async (req, res, next) => {
+    try {
+        const { activation_token } = req.body
+        const newUser = jwt.verify(
+            activation_token,
+            process.env.ACTIVATION_SECRET
+        )
+        if (!newUser) {
+            return next(new ErrorHandler('Invalid Token', 400))
+        }
+        const { name, email, password, avatar } = newUser;
+        User.create({ name, email, password, avatar })
+        sendToken(newUser, 201, res)
+    } catch (err) {
+        return next(new ErrorHandler(err.message, 500))
+    }
+}))//higher order function
+
+router.post('/login-user', catchAsyncErrors(async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return next(new ErrorHandler("please provide all fields", 400))
+        }
+        const user = await User.findOne({ email }).select("+password")
+        if(!user){
+            return next(new ErrorHandler("Requested user not found", 400))
+        }
+        const isPasswordValid = await user.comparePassword(password)
+
+        if(!isPasswordValid){
+            return next(new ErrorHandler("Invalid credentials", 400))
+        }
+        sendToken(user, 201, res)
+    } catch (err) {
+        return next(new ErrorHandler(err.message, 500))
+    }
+}))
 
 module.exports = router;
