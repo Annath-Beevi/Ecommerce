@@ -8,6 +8,7 @@ const ErrorHandler = require('../utils/ErrorHandler')
 const sendMail = require("../utils/sendMail")
 const catchAsyncErrors = require('../middleware/catchAsyncErrors')
 const sendToken = require('../utils/jwtToken')
+const { isAuthenticated } = require('../middleware/auth')
 
 const router = express.Router()
 
@@ -101,6 +102,21 @@ router.post('/login-user', catchAsyncErrors(async (req, res, next) => {
         }
         sendToken(user, 201, res)
     } catch (err) {
+        return next(new ErrorHandler(err.message, 500))
+    }
+}))
+
+router.get('/getuser', isAuthenticated, catchAsyncErrors(async (req, res, next) => {
+    try{
+        const user = await User.findById(req.user.id)
+        if(!user){
+            return next(new ErrorHandler("Requested user not found", 400))
+        }
+        res.status(200).json({
+            success: true,
+            user
+        })
+    }catch(err){
         return next(new ErrorHandler(err.message, 500))
     }
 }))
