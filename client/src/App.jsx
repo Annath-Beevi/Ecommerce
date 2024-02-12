@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { LoginPage, SignUpPage, ActivationPage } from './Routes'
+import { LoginPage, SignUpPage, ActivationPage, HomePage } from './Routes'
 import { ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import store from './redux/store'
