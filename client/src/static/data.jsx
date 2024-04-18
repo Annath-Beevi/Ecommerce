@@ -647,3 +647,32 @@ export const footerSupportLinks = [
     name: "Live chat",
   },
 ];
+
+
+export const faq = [
+  {
+    question: "How do I track my order?",
+    answer :`Just log in to your account to see the status of your orders
+    instantly. After tapping "My Account," select the "My Orders."
+    button. Now, click the "Track My Order" option and rejoice in
+    having access to your Meesho order status.`
+  },
+  {
+    question: "What is mode of payment?",
+    answer :`Most websites request for payment through payment cards. If a site begins to ask you to send a check or cash or anything shady, then you need to question their intention. You need to ask question on the payment method you need to carry out so that you would not be ripped. Just as there are genuine online stores, there are also several cloned ones that prey on novice online shoppers. To avoid being a prey, you need to ask questions.`
+  },
+  {
+    question: "Is the site safe?",
+    answer :`Personal security is a very vital aspect of one’s existence. It can be nerve racking for someone to start typing card details on websites without having any guarantee of safety. 
+
+    Before going into any transaction, you need to ask for the strength of the site’s security. You can read articles on how authentic e-commerce sites function so that you won’t be a victim of fraudsters.
+    
+    When you are typing your credit card information on a site, the ‘url’ ought to begin with https:// and not http://. If the site does not have such feature when you are typing in your personal financial information, then you need to flee.`
+  },
+  {
+    question: "Do you offer incentives?",
+    answer :`It is not gluttony to want one or two discount coupons every once in a while. Most websites offer such giveaways to active customers just to keep them interested in the site. Also, as an online shopper, you would want to know if being a regular customer will be a worthwhile thing to do on a website. 
+
+    If details of such incentives are not clearly stated about the website, then you need to make inquiries so that you do not shop amiss.`
+  },
+]
